@@ -60,4 +60,17 @@ public class DeviceService {
 
         return device;
     }
+
+    public Device setDeviceStatus(Long deviceId, boolean status) {
+        Device device = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+        device.setStatus(status);
+        return deviceRepository.save(device);
+    }
+
+    public boolean getDeviceStatus(Long deviceId) {
+        return deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new RuntimeException("Device not found"))
+                .getStatus();
+    }
 }

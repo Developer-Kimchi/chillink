@@ -9,9 +9,9 @@ spring:
 
   # 데이터베이스(MySQL) 설정
   datasource:
-    url: jdbc:mysql://localhost:3306/chilink_db?useSSL=false&serverTimezone=UTC
-    username: root       # MySQL 사용자명
-    password: password   # MySQL 비밀번호
+    url: jdbc:mysql://localhost:3306/chilink?useSSL=false&serverTimezone=UTC
+    username: chilink       # MySQL 사용자명
+    password: chilink   # MySQL 비밀번호
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # JPA 설정
@@ -22,6 +22,7 @@ spring:
     properties:
       hibernate:
         format_sql: true  # SQL 예쁘게 포맷팅
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 # 로깅 설정
 logging:

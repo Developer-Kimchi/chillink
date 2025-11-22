@@ -2,6 +2,7 @@ package com.example.chilink.service;
 
 import com.example.chilink.domain.Device;
 import com.example.chilink.domain.DeviceLog;
+import com.example.chilink.infrastructure.netty.DeviceEventPublisher;
 import com.example.chilink.repository.DeviceLogRepository;
 import com.example.chilink.repository.DeviceRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ public class DeviceService {
 
     private final DeviceRepository deviceRepository;
     private final DeviceLogRepository deviceLogRepository;
+    private final DeviceEventPublisher eventPublisher;
 
     /**
      * 모든 장치 조회
@@ -62,10 +64,14 @@ public class DeviceService {
     }
 
     public Device setDeviceStatus(Long deviceId, boolean status) {
-        Device device = deviceRepository.findById(deviceId)
+        Device device = deviceRepository.findById(Long.valueOf(deviceId))
                 .orElseThrow(() -> new RuntimeException("Device not found"));
         device.setStatus(status);
-        return deviceRepository.save(device);
+        deviceRepository.save(device);
+
+        // 상태 변경 이벤트 발행
+        eventPublisher.publish(device);
+        return device;
     }
 
     public boolean getDeviceStatus(Long deviceId) {

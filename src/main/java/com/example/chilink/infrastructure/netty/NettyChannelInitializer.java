@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final DeviceService deviceService;
+    private final NettyTcpServer server;
 
     @Override
     protected void initChannel(SocketChannel ch) {
@@ -24,6 +25,6 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new StringEncoder()); // String → ByteBuf
 
         // Device 이벤트 처리 핸들러 추가
-        ch.pipeline().addLast(new NettyServerHandler(deviceService));
+        ch.pipeline().addLast(new NettyServerHandler(deviceService, server));
     }
 }

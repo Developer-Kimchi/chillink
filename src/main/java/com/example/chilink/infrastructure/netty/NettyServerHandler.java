@@ -17,58 +17,53 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
+
     private final DeviceService deviceService;
+    private final NettyTcpServer server;
 
-    /**
-     * 클라이언트로부터 메시지 수신 시 호출
-     * 메시지 포맷: "DEVICE_ID:COMMAND" 예: "1:ON", "2:OFF", "3:TOGGLE"
-     */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-
-        System.out.println("Received from device: " + msg);
-
-        try {
-            // 메시지 파싱
-            String[] parts = msg.split(":");
-            Long deviceId = Long.parseLong(parts[0]); // 장치 ID
-            String command = parts[1].toUpperCase().trim();  // 명령어 (ON/OFF/TOGGLE)
-
-            Device updatedDevice;
-
-            // 명령어에 따른 상태 변경
-            switch (command) {
-                case "ON":
-                    updatedDevice = deviceService.setDeviceStatus(deviceId, true);
-                    break;
-                case "OFF":
-                    updatedDevice = deviceService.setDeviceStatus(deviceId, false);
-                    break;
-                case "TOGGLE":
-                    updatedDevice = deviceService.toggleDeviceStatus(deviceId);
-                    break;
-                default:
-                    ctx.writeAndFlush("Unknown command\n");
-                    return;
-            }
-
-            // 상태 변경 후 클라이언트에 응답 전송
-            ctx.writeAndFlush("Device " + updatedDevice.getId() +
-                    " status: " + updatedDevice.getStatus() + "\n");
-
-        } catch (Exception e) {
-            // 오류 발생 시 클라이언트에 메시지 전송
-            ctx.writeAndFlush("Error: " + e.getMessage() + "\n");
-        }
+    public void channelActive(ChannelHandlerContext ctx) {
+        server.addChannel(ctx.channel());  // 채널 등록
+        ctx.writeAndFlush("Welcome to Netty Server!\n");
     }
 
-    /**
-     * 예외 발생 시 호출
-     * 소켓 연결 종료
-     */
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
+    public void channelInactive(ChannelHandlerContext ctx) {
+        server.removeChannel(ctx.channel()); // 채널 제거
+    }
+
+    // "1:ON", "1:OFF", "1:TOGGLE" 형태로 split
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
+        if (msg == null || msg.trim().isEmpty()) return;
+
+        System.out.println("================================== " + msg);
+
+        String[] parts = msg.trim().split(":");
+        if (parts.length != 2) {
+            ctx.writeAndFlush("Invalid format\n");
+            return;
+        }
+
+        Long deviceId = Long.valueOf(parts[0].trim());
+        String command = parts[1].trim();
+
+        // 명령어 처리
+        switch (command) {
+            case "ON":
+                deviceService.setDeviceStatus(deviceId, true);
+                ctx.writeAndFlush("Device " + deviceId + " turned ON\n");
+                break;
+            case "OFF":
+                deviceService.setDeviceStatus(deviceId, false);
+                ctx.writeAndFlush("Device " + deviceId + " turned OFF\n");
+                break;
+            case "TOGGLE":
+                deviceService.toggleDeviceStatus(deviceId);
+                ctx.writeAndFlush("Device " + deviceId + " toggled\n");
+                break;
+            default:
+                ctx.writeAndFlush("Unknown command\n");
+        }
     }
 }

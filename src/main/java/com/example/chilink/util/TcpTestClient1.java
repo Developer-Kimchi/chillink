@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class TcpTestClient {
+public class TcpTestClient1 {
     public static void main(String[] args) {
         String host = "localhost";
         int port = 9090;
@@ -19,15 +19,19 @@ public class TcpTestClient {
             out.println("1:ON");
             System.out.println("Server reply: " + in.readLine());
 
+            Thread.sleep(500);
+
             // Device OFF
             out.println("1:OFF");
             System.out.println("Server reply: " + in.readLine());
+
+            Thread.sleep(500);
 
             // Device TOGGLE
             out.println("1:TOGGLE");
             System.out.println("Server reply: " + in.readLine());
 
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }

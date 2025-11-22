@@ -24,16 +24,17 @@ spring:
         format_sql: true  # SQL 예쁘게 포맷팅
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+  # Redis 설정 (나중에 이벤트 기반 통신용)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 # 로깅 설정
 logging:
   level:
     root: INFO
     com.chilink: DEBUG   # com.chilink 패키지 내 로그 DEBUG 레벨로 출력
-
-# Redis 설정 (나중에 이벤트 기반 통신용)
-redis:
-  host: localhost
-  port: 6379
 
 # Netty 서버 설정 (나중에 TCP 통신용)
 netty:

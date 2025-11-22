@@ -1,0 +1,74 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# === Gradle ===
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# === OS 관련 ===
+.DS_Store
+Thumbs.db
+
+# === Java ===
+*.jar
+*.war
+*.ear
+*.class
+*.log
+
+# === Spring Boot ===
+spring-boot-devtools.properties
+
+# === MySQL / DB ===
+*.sql
+*.db
+*.h2.db
+
+# === Docker ===
+docker-compose.override.yml
+*.env
+
+# === 테스트 / 임시 파일 ===
+*.tmp
+*.swp
+*.bak
+
+# === 기타 ===
+.settings/
+.vscode/
